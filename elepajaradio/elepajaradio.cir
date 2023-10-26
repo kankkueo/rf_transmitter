@@ -1,0 +1,22 @@
+.title KiCad schematic
+C6 PWR Net-_AE1-Pad1_ C_Variable
+C4 Net-_C3-Pad2_ Net-_C4-Pad2_ C
+R3 Net-_C4-Pad2_ GND R_US
+L1 PWR Net-_C3-Pad2_ L
+C2 Net-_C2-Pad1_ GND C
+Y1 Net-_C2-Pad1_ Net-_C1-Pad1_ Crystal
+C1 Net-_C1-Pad1_ GND C
+U2 unconnected-_U2-Pad__1 unconnected-_U2-Pad_ GND PWR OLED_I2C
+SW1 unconnected-_SW1-PadA_ unconnected-_SW1-PadB_ unconnected-_SW1-PadC_ RotaryEncoder
+U1 unconnected-_U1-Pad1_ unconnected-_U1-Pad2_ GND PWR GND PWR Net-_C1-Pad1_ Net-_C2-Pad1_ unconnected-_U1-Pad9_ unconnected-_U1-Pad10_ unconnected-_U1-Pad11_ unconnected-_U1-Pad12_ unconnected-_U1-Pad13_ unconnected-_U1-Pad14_ unconnected-_U1-Pad15_ unconnected-_U1-Pad16_ unconnected-_U1-Pad17_ PWR unconnected-_U1-Pad19_ unconnected-_U1-Pad20_ GND unconnected-_U1-Pad22_ unconnected-_U1-Pad23_ unconnected-_U1-Pad24_ unconnected-_U1-Pad25_ unconnected-_U1-Pad26_ unconnected-_U1-Pad27_ unconnected-_U1-Pad28_ unconnected-_U1-Pad29_ unconnected-_U1-Pad30_ unconnected-_U1-Pad31_ unconnected-_U1-Pad32_ ATmega328P-A
+MK1 GND Net-_MK1-Pad2_ Microphone
+R2 Net-_R1-Pad1_ Net-_Q1-Pad2_ R_US
+U3 Net-_Q1-Pad2_ Net-_R1-Pad1_ Net-_MK1-Pad2_ Opamp_Dual
+C3 PWR Net-_C3-Pad2_ C_Variable
+R1 Net-_R1-Pad1_ GND R_US
+C5 Net-_C4-Pad2_ Net-_C5-Pad2_ C
+Q1 Net-_C4-Pad2_ Net-_Q1-Pad2_ Net-_C3-Pad2_ 2N2219
+L2 PWR Net-_AE1-Pad1_ L
+AE1 Net-_AE1-Pad1_ Antenna
+Q2 GND Net-_C5-Pad2_ Net-_AE1-Pad1_ 2N2219
+.end
