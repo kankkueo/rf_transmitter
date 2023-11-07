@@ -1185,13 +1185,13 @@
       )
     )
     (symbol "oled_lafvin:OLED_I2C" (in_bom yes) (on_board yes)
-      (property "Reference" "U" (at 6.35 1.27 0)
-        (effects (font (size 1.27 1.27)))
+      (property "Reference" "U2" (at 5.08 2.5401 0)
+        (effects (font (size 1.27 1.27)) (justify left))
       )
-      (property "Value" "OLED_I2C" (at 10.16 3.81 0)
-        (effects (font (size 1.27 1.27)))
+      (property "Value" "OLED_I2C" (at 5.08 0.0001 0)
+        (effects (font (size 1.27 1.27)) (justify left))
       )
-      (property "Footprint" "" (at 0 0 0)
+      (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" (at 1.27 7.62 0)
         (effects (font (size 1.27 1.27)) hide)
       )
       (property "Datasheet" "" (at 0 0 0)
@@ -1204,21 +1204,21 @@
         )
       )
       (symbol "OLED_I2C_1_1"
-        (pin input line (at -8.89 0 0) (length 2.54)
-          (name "Clock" (effects (font (size 1.27 1.27))))
-          (number "" (effects (font (size 1.27 1.27))))
+        (pin input line (at -8.89 5.08 0) (length 2.54)
+          (name "VCC" (effects (font (size 1.27 1.27))))
+          (number "1" (effects (font (size 1.27 1.27))))
         )
         (pin input line (at -8.89 2.54 0) (length 2.5)
           (name "Data" (effects (font (size 1.27 1.27))))
-          (number "" (effects (font (size 1.27 1.27))))
+          (number "2" (effects (font (size 1.27 1.27))))
+        )
+        (pin input line (at -8.89 0 0) (length 2.54)
+          (name "Clock" (effects (font (size 1.27 1.27))))
+          (number "3" (effects (font (size 1.27 1.27))))
         )
         (pin input line (at -8.89 -2.54 0) (length 2.54)
           (name "GND" (effects (font (size 1.27 1.27))))
-          (number "" (effects (font (size 1.27 1.27))))
-        )
-        (pin input line (at -8.89 5.08 0) (length 2.54)
-          (name "VCC" (effects (font (size 1.27 1.27))))
-          (number "" (effects (font (size 1.27 1.27))))
+          (number "4" (effects (font (size 1.27 1.27))))
         )
       )
     )
@@ -1932,16 +1932,16 @@
     (property "Value" "OLED_I2C" (at 96.52 116.8399 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" (at 91.44 116.84 0)
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" (at 92.71 109.22 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (at 91.44 116.84 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "" (uuid 55d30a19-957d-469c-bd3d-06e85abeabcd))
-    (pin "" (uuid 55d30a19-957d-469c-bd3d-06e85abeabcd))
-    (pin "" (uuid 55d30a19-957d-469c-bd3d-06e85abeabcd))
-    (pin "" (uuid 55d30a19-957d-469c-bd3d-06e85abeabcd))
+    (pin "1" (uuid cdc9a0a1-0f4b-4569-ac45-b2d294b2a94a))
+    (pin "2" (uuid 4edece7d-2c06-470f-87e4-ea21c6f5b33e))
+    (pin "3" (uuid 1087a47c-7ca7-4522-95d9-f6ced0434168))
+    (pin "4" (uuid 30dc8a30-6b7b-44e1-a60a-0641e5d5b772))
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
@@ -1986,7 +1986,7 @@
     (property "Value" "Crystal" (at 101.6 33.0199 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "Oscillator:Oscillator_SMD_Abracon_ASDMB-4Pin_2.5x2.0mm" (at 97.79 31.75 0)
+    (property "Footprint" "Crystal:Crystal_HC18-U_Vertical" (at 97.79 31.75 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 97.79 31.75 0)
@@ -2031,7 +2031,7 @@
   (symbol (lib_id "power:GND") (at 180.34 124.46 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 0988f18f-14f0-4f8a-b122-f91e2cad628e)
-    (property "Reference" "#PWR?" (at 180.34 130.81 0)
+    (property "Reference" "#PWR0105" (at 180.34 130.81 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 180.34 129.54 0)
@@ -2047,7 +2047,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "#PWR?") (unit 1)
+          (reference "#PWR0105") (unit 1)
         )
       )
     )
@@ -2082,7 +2082,7 @@
   (symbol (lib_id "power:GND") (at 213.36 106.68 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 1702e0e2-7dfd-459e-8adb-c7f77b929cf4)
-    (property "Reference" "#PWR?" (at 213.36 113.03 0)
+    (property "Reference" "#PWR0102" (at 213.36 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 213.36 111.76 0)
@@ -2098,7 +2098,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "#PWR?") (unit 1)
+          (reference "#PWR0102") (unit 1)
         )
       )
     )
@@ -2161,13 +2161,13 @@
   (symbol (lib_id "Device:Antenna") (at 251.46 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 2c58b255-51ad-4423-8789-1f5d6ce1a67c)
-    (property "Reference" "AE?" (at 254 85.7249 0)
+    (property "Reference" "AE1" (at 254 85.7249 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "Antenna" (at 254 88.2649 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "" (at 251.46 86.36 0)
+    (property "Footprint" "Connector_Coaxial:BNC_TEConnectivity_1478204_Vertical" (at 251.46 86.36 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 251.46 86.36 0)
@@ -2177,7 +2177,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "AE?") (unit 1)
+          (reference "AE1") (unit 1)
         )
       )
     )
@@ -2393,7 +2393,7 @@
   (symbol (lib_id "Device:R_US") (at 186.69 107.95 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 5e95db06-7439-4544-b6f8-d899b9e94e75)
-    (property "Reference" "R?" (at 189.23 106.6799 0)
+    (property "Reference" "R5" (at 189.23 106.6799 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "R_US" (at 189.23 109.2199 0)
@@ -2410,7 +2410,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "R?") (unit 1)
+          (reference "R5") (unit 1)
         )
       )
     )
@@ -2527,7 +2527,7 @@
     (property "Value" "MAX2606" (at 227.33 99.06 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "" (at 227.33 105.41 0)
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" (at 227.33 105.41 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "" (at 227.33 105.41 0)
@@ -2551,7 +2551,7 @@
   (symbol (lib_id "Device:Microphone") (at 180.34 119.38 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 82329b25-712d-4732-9dc8-8604d7cab6fe)
-    (property "Reference" "MK?" (at 184.15 117.4114 0)
+    (property "Reference" "MK1" (at 184.15 117.4114 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "Microphone" (at 184.15 119.9514 0)
@@ -2568,7 +2568,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "MK?") (unit 1)
+          (reference "MK1") (unit 1)
         )
       )
     )
@@ -2788,7 +2788,7 @@
     (property "Value" "SW_Push" (at 127 72.39 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "" (at 127 72.39 0)
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 127 72.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 127 72.39 0)
@@ -2839,7 +2839,7 @@
     (property "Value" "SW_Push" (at 127 58.42 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "" (at 127 58.42 0)
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 127 58.42 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 127 58.42 0)
@@ -2884,7 +2884,7 @@
   (symbol (lib_id "power:GND") (at 194.31 86.36 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid b95ebacb-78bb-453b-9abb-696916c48d1e)
-    (property "Reference" "#PWR?" (at 194.31 92.71 0)
+    (property "Reference" "#PWR0101" (at 194.31 92.71 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 194.31 91.44 0)
@@ -2900,7 +2900,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "#PWR?") (unit 1)
+          (reference "#PWR0101") (unit 1)
         )
       )
     )
@@ -2909,7 +2909,7 @@
   (symbol (lib_id "Device:C") (at 207.01 118.11 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid bb1bd00f-a234-4695-97e4-780f80494732)
-    (property "Reference" "C?" (at 210.82 116.8399 0)
+    (property "Reference" "C8" (at 210.82 116.8399 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "C" (at 210.82 119.3799 0)
@@ -2926,7 +2926,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "C?") (unit 1)
+          (reference "C8") (unit 1)
         )
       )
     )
@@ -2961,7 +2961,7 @@
   (symbol (lib_id "Device:L") (at 213.36 102.87 180) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid db99bd2a-ec65-4753-ae81-0c8463f6372a)
-    (property "Reference" "L?" (at 214.63 101.5999 0)
+    (property "Reference" "L1" (at 214.63 101.5999 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "L" (at 214.63 104.1399 0)
@@ -2978,7 +2978,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "L?") (unit 1)
+          (reference "L1") (unit 1)
         )
       )
     )
@@ -2987,7 +2987,7 @@
   (symbol (lib_id "power:GND") (at 207.01 124.46 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid e7336e46-faab-4d80-bbdf-e40b4b4f97ba)
-    (property "Reference" "#PWR?" (at 207.01 130.81 0)
+    (property "Reference" "#PWR0104" (at 207.01 130.81 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 207.01 129.54 0)
@@ -3003,7 +3003,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "#PWR?") (unit 1)
+          (reference "#PWR0104") (unit 1)
         )
       )
     )
@@ -3118,7 +3118,7 @@
   (symbol (lib_id "Potentiometer_Digital:MCP4018-xxxxLT") (at 194.31 78.74 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid eff0f6cd-8e59-4d87-9220-f5ddf02208cb)
-    (property "Reference" "U?" (at 193.7894 66.04 0)
+    (property "Reference" "U5" (at 193.7894 66.04 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "MCP4018-xxxxLT" (at 193.7894 68.58 0)
@@ -3139,7 +3139,7 @@
     (instances
       (project "elepajaradio"
         (path "/be645d0f-8568-47a0-a152-e3ddd33563eb"
-          (reference "U?") (unit 1)
+          (reference "U5") (unit 1)
         )
       )
     )
