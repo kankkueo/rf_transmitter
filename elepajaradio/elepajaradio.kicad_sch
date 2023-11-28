@@ -2252,7 +2252,7 @@
     (property "Value" "Antenna" (at 91.44 126.3649 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Connector_Coaxial:BNC_TEConnectivity_1478204_Vertical" (at 88.9 124.46 0)
+    (property "Footprint" "Connector_Coaxial:SMA_Amphenol_901-143_Horizontal" (at 88.9 124.46 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 88.9 124.46 0)
