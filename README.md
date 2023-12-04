@@ -22,7 +22,7 @@ RF transmitter project for Aalto university course Elektroniikkapaja. The transm
 
 ## SDR++ captured demo
 
-[![Demo video](documentation/demoSDR](documentation/demoSDR)
+[![Demo video](documentation/demoSDR](documentation/demoSDR.mp4)
 
 
 ## License
