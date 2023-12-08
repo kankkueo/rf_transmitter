@@ -223,10 +223,11 @@ void updateOLED() {
     i2c_stop();
 }
 
-void updateDP(int value){
+void updateDP(int value) {
     //uint8_t wiperValue = (uint8_t) (0x7F - (frequency / 10);
-    //i2c_write(wiperValue);
-    //i2c_stop();
+    i2c_start(MCP4017_ADDR);
+    i2c_write(value);
+    i2c_stop();
 }
 
 /*
@@ -253,41 +254,46 @@ ISR(INT1_vect) {
 
 void setup() {
     i2c_init();
-    PORTB = 0;
+    DDRB = 0;
 }
 
 int main(void) {
     setup();
-    initEncoder();
-    initOLED();
+    //initEncoder();
+    //initOLED();
 
-    int pot_value = 100;
+    int pot_value = 30;
 
     while(1) {
+        /*
         if (encoderValue != encoderLast) {
             frequency += encoderValue;
             encoderLast = encoderValue;
 
-            if (frequency < 100) { 
-                frequency = 100;
-            } else if (frequency > 120) {
-                frequency = 120;
+            if (pot_value < 0) { 
+                pot_value = 0;
+            } 
+            else if (pot_value > 120) {
+                pot_value = 120;
             }
-            updateDP(pot_value);
             updateOLED();
         }
+        */
 
         
         // Button 1
         if (PORTB & (1 << 0)) {
-
+            pot_value++;
+            updateDP(pot_value);
         }
         // Button 2
         if (PORTB & (1 << 1)) {
-
+            pot_value--;
+            updateDP(pot_value);
         }
 
 
+        updateDP(pot_value);
         _delay_ms(100);  // Delay to reduce display update frequency
     }
 
