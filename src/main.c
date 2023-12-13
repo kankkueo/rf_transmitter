@@ -6,183 +6,304 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*************************************************************************
-* Title:    I2C master library using hardware TWI interface
-* Author:   Peter Fleury <pfleury@gmx.ch>  http://jump.to/fleury
-* File:     $Id: twimaster.c,v 1.3 2005/07/02 11:14:21 Peter Exp $
-* Software: AVR-GCC 3.4.3 / avr-libc 1.2.3
-* Target:   any AVR device with hardware TWI 
-* Usage:    API compatible with I2C Software Library i2cmaster.h
-**************************************************************************/
-#include <inttypes.h>
-#include <compat/twi.h>
+/*
+* twi_master.c
+*
+* Created: 09-Jun-19 11:20:17 AM
+*  Author: TEP SOVICHEA
+*/
 
-#include "i2c.h"
+#include "twi_master.h"
 
-void i2c_init ( void )
+static ret_code_t tw_start(void)
 {
-    TWCR = _BV ( TWEN );
-    TWBR = ( F_CPU / I2C_CONFIG_F_SCL - 16 ) / 2;
+	/* Send START condition */
+#if DEBUG_LOG
+	printf(BG "Send START condition..." RESET);
+#endif
+	TWCR =  (1 << TWINT) | (1 << TWEN) | (1 << TWSTA);
+	
+	/* Wait for TWINT flag to set */
+	while (!(TWCR & (1 << TWINT)));
+	
+	/* Check error */
+	if (TW_STATUS != TW_START && TW_STATUS != TW_REP_START)
+	{
+#if DEBUG_LOG
+		printf("\n");
+#endif
+		return TW_STATUS;
+	}
+	
+#if DEBUG_LOG
+	printf("SUCCESS\n");
+#endif
+	return SUCCESS;
 }
 
-/**
- * Initialize I2C Interface with pullups
- */
-void i2c_init_with_pullups ( void )
+
+static void tw_stop(void)
 {
-    I2C_CONFIG_DDR &= ~( _BV ( I2C_CONFIG_SDA ) | _BV ( I2C_CONFIG_SCL ) );
-    I2C_CONFIG_PORT |= _BV ( I2C_CONFIG_SDA ) | _BV ( I2C_CONFIG_SCL );
-    i2c_init (  );
+	/* Send STOP condition */
+#if DEBUG_LOG
+	puts(BG "Send STOP condition." RESET);
+#endif
+	TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
 }
 
-/**
- * Uninitialize I2C Interface
- */
-void i2c_uninit ( void )
+
+static ret_code_t tw_write_sla(uint8_t sla)
 {
-    TWCR &= ~_BV ( TWEN );
+	/* Transmit slave address with read/write flag */
+#if DEBUG_LOG
+	printf(BG "Write SLA + R/W: 0x%02X..." RESET, sla);
+#endif
+	TWDR = sla;
+	TWCR = (1 << TWINT) | (1 << TWEN);
+	
+	/* Wait for TWINT flag to set */
+	while (!(TWCR & (1 << TWINT)));
+	if (TW_STATUS != TW_MT_SLA_ACK && TW_STATUS != TW_MR_SLA_ACK)
+	{
+#if DEBUG_LOG
+		printf("\n");
+#endif
+		return TW_STATUS;
+	}
+
+#if DEBUG_LOG
+	printf("SUCCESS\n");
+#endif
+	return SUCCESS;
 }
 
-/**
- * Wait until I2C Interface is ready
- */
-static void i2c_wait ( void )
+
+static ret_code_t tw_write(uint8_t data)
 {
-    while ( !( TWCR & _BV ( TWINT ) ) );
+	/* Transmit 1 byte*/
+#if DEBUG_LOG
+	printf(BG "Write data byte: 0x%02X..." RESET, data);
+#endif
+	TWDR = data;
+	TWCR = (1 << TWINT) | (1 << TWEN);
+	
+	/* Wait for TWINT flag to set */
+	while (!(TWCR & (1 << TWINT)));
+	if (TW_STATUS != TW_MT_DATA_ACK)
+	{
+#if DEBUG_LOG
+		printf("\n");
+#endif
+		return TW_STATUS;
+	}
+	
+#if DEBUG_LOG
+	printf("SUCCESS\n");
+#endif
+	return SUCCESS;
 }
 
-/**
- * Send I2C Start Condition
- */
-int8_t i2c_start ( void )
+
+static uint8_t tw_read(bool read_ack)
 {
-    TWCR = _BV ( TWEN ) | _BV ( TWINT ) | _BV ( TWSTA );
-    i2c_wait (  );
-    return ( TWSR & TW_STATUS_MASK ) != TW_START;
+	if (read_ack)
+	{
+		TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);
+		while (!(TWCR & (1 << TWINT)));
+		if (TW_STATUS != TW_MR_DATA_ACK)
+		{
+			return TW_STATUS;
+		}
+	}
+	else
+	{
+		TWCR = (1 << TWINT) | (1 << TWEN);
+		while (!(TWCR & (1 << TWINT)));
+		if (TW_STATUS != TW_MR_DATA_NACK)
+		{
+			return TW_STATUS;
+		}
+	}
+	uint8_t data = TWDR;
+#if DEBUG_LOG
+	printf(BG "Read data byte: 0x%02X\n" RESET, data);
+#endif
+	return data;
 }
 
-/**
- * Send I2C Repeated-Start Condition
- */
-int8_t i2c_restart ( void )
+
+void tw_init(twi_freq_mode_t twi_freq_mode, bool pullup_en)
 {
-    TWCR = _BV ( TWEN ) | _BV ( TWINT ) | _BV ( TWSTA );
-    i2c_wait (  );
-    return ( TWSR & TW_STATUS_MASK ) != TW_REP_START;
+	DDRC  |= (1 << TW_SDA_PIN) | (1 << TW_SCL_PIN);
+	if (pullup_en)
+	{
+#if DEBUG_LOG
+		puts(BG "Enable pull-up resistor." RESET);
+#endif
+		PORTC |= (1 << TW_SDA_PIN) | (1 << TW_SCL_PIN);
+	}
+	else
+	{
+		PORTC &= ~((1 << TW_SDA_PIN) | (1 << TW_SCL_PIN));
+	}
+	DDRC  &= ~((1 << TW_SDA_PIN) | (1 << TW_SCL_PIN));
+	
+	switch (twi_freq_mode)
+	{
+		case TW_FREQ_100K:
+		/* Set bit rate register 72 and prescaler to 1 resulting in
+		SCL_freq = 16MHz/(16 + 2*72*1) = 100KHz	*/
+		TWBR = 72;
+		break;
+		
+		case TW_FREQ_250K:
+		/* Set bit rate register 24 and prescaler to 1 resulting in
+		SCL_freq = 16MHz/(16 + 2*24*1) = 250KHz	*/
+		TWBR = 24;
+		break;
+		
+		case TW_FREQ_400K:
+		/* Set bit rate register 12 and prescaler to 1 resulting in
+		SCL_freq = 16MHz/(16 + 2*12*1) = 400KHz	*/
+		TWBR = 12;
+		break;
+		
+		default: break;
+	}
 }
 
-/**
- * Send I2C Stop Condition
- */
-int8_t i2c_stop ( void )
+
+ret_code_t tw_master_transmit(uint8_t slave_addr, uint8_t* p_data, uint8_t len, bool repeat_start)
 {
-    TWCR = _BV ( TWEN ) | _BV ( TWINT ) | _BV ( TWSTO );
-    while ( TWCR & _BV ( TWSTO ) );
-    return 0;
+	ret_code_t error_code;
+	
+	/* Send START condition */
+	error_code = tw_start();
+	if (error_code != SUCCESS)
+	{
+		return error_code;
+	}
+	
+	/* Send slave address with WRITE flag */
+	error_code = tw_write_sla(TW_SLA_W(slave_addr));
+	if (error_code != SUCCESS)
+	{
+		return error_code;
+	}
+	
+	/* Send data byte in single or burst mode */
+	for (int i = 0; i < len; ++i)
+	{
+		error_code = tw_write(p_data[i]);
+		if (error_code != SUCCESS)
+		{
+			return error_code;
+		}
+	}
+	
+	if (!repeat_start)
+	{
+		/* Send STOP condition */
+		tw_stop();
+	}
+	
+	return SUCCESS;
 }
 
-/**
- * Select I2C Slave Address
- */
-int8_t i2c_addr ( uint8_t addr )
+
+ret_code_t tw_master_receive(uint8_t slave_addr, uint8_t* p_data, uint8_t len)
 {
-    TWDR = addr;
-    TWCR = _BV ( TWEN ) | _BV ( TWINT );
-    i2c_wait (  );
-    return ( TWSR & TW_STATUS_MASK ) != ( ( addr & 1 ) ? TW_MR_SLA_ACK : TW_MT_SLA_ACK );
+	ret_code_t error_code;
+	
+	/* Send START condition */
+	error_code = tw_start();
+	if (error_code != SUCCESS)
+	{
+		return error_code;
+	}
+	
+	/* Write slave address with READ flag */
+	error_code = tw_write_sla(TW_SLA_R(slave_addr));
+	if (error_code != SUCCESS)
+	{
+		return error_code;
+	}
+	
+	/* Read single or multiple data byte and send ack */
+	for (int i = 0; i < len-1; ++i)
+	{
+		p_data[i] = tw_read(TW_READ_ACK);
+	}
+	p_data[len-1] = tw_read(TW_READ_NACK);
+	
+	/* Send STOP condition */
+	tw_stop();
+	
+	return SUCCESS;
 }
 
-/**
- * Send data byte to Slave Device
+/*  Oled display driver
  */
-int8_t i2c_tx_byte ( uint8_t byte )
-{
-    TWDR = byte;
-    TWCR = _BV ( TWEN ) | _BV ( TWINT );
-    i2c_wait (  );
-    return ( TWSR & TW_STATUS_MASK ) != TW_MT_DATA_ACK;
-}
 
-/**
- * Send data bytes to Slave Device
- */
-int8_t i2c_tx_data ( const uint8_t * data, size_t len )
-{
-    size_t i;
+void updateOLED() {
+//    char buffer[16];
+//    sprintf(buffer, "Freq: %d", frequency);
+//    tw_master_transmit(0x3c, &disp, 1, false);
 
-    for ( i = 0; i < len; i++ )
-    {
-        if ( i2c_tx_byte ( data[i] ) )
-        {
-            return 1;
-        }
+    /*
+    for (uint8_t i = 0; i < strlen(buffer); i++) {
+        i2c_write(buffer[i]);
     }
-
-    return 0;
+    i2c_stop();
+    */
 }
-
-/**
- * Receive data byte from Slave Device
- */
-int8_t i2c_rx_byte ( uint8_t * byte )
-{
-    TWCR = _BV ( TWEN ) | _BV ( TWINT ) | _BV ( TWEA );
-    i2c_wait (  );
-    *byte = TWDR;
-    return ( TWSR & TW_STATUS_MASK ) != TW_MR_DATA_ACK;
-}
-
-/**
- * Receive last data byte from Slave Device
- */
-int8_t i2c_rx_last ( uint8_t * byte )
-{
-    TWCR = _BV ( TWEN ) | _BV ( TWINT );
-    i2c_wait (  );
-    *byte = TWDR;
-    return ( TWSR & TW_STATUS_MASK ) != TW_MR_DATA_NACK;
-}
-
-/**
- * Receive data bytes from Slave Device
- */
-int8_t i2c_rx_data ( uint8_t * data, size_t len )
-{
-    size_t i;
-
-    for ( i = 0; i + 1 < len; i++ )
-    {
-        if ( i2c_rx_byte ( data + i ) )
-        {
-            return 1;
-        }
-    }
-
-    if ( len )
-    {
-        if ( i2c_rx_last ( data + i ) )
-        {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 
 int main(void) {
 
-    i2c_init_with_pullups();
+    DDRB = 0;
+    tw_start();
+    tw_init(TW_FREQ_100K, false);
+
+    char disp = 0xa4;
+    tw_master_transmit(0x3c, &disp, 1, false);
+
+    disp = 0xa6;
+    tw_master_transmit(0x3c, &disp, 1, false);
 
 
-    int pot_value = 30;
+    disp = 0xaf;
+    tw_master_transmit(0x3c, &disp, 1, false);
+
+
+    char pot_value = 126;
 
     while(1) {
-        i2c_addr(0x2f);
-        i2c_tx_byte(10);
 
-        _delay_ms(50);  // Delay to reduce display update frequency
- 
+
+
+        // Button 1
+        if (PINB & (1 << 0)) {
+            if (pot_value <= 122) {
+                pot_value += 5;
+            }
+            tw_master_transmit(0x2f, &pot_value, 1, false);
+            _delay_ms(100);   
+        }
+        // Button 2
+        if (PINB & (1 << 1)) {
+            if (pot_value >= 5) {
+                pot_value -= 5;
+            }
+            tw_master_transmit(0x2f, &pot_value, 1, false);
+            _delay_ms(100);   
+        }
+
+ //       uint8_t bb[3] = {'a', 'b','c'};
+//        tw_master_transmit(0x3c, &bb , 3, false);
+
+        _delay_ms(10);   
+
+
     }
 
     return 0;
