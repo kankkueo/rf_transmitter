@@ -7,7 +7,7 @@ using an Arduino Uno as an in-system programmer.
 
 ### Requirements
 - avr-gcc
-- avr-glibc
+- avr-libc
 - avrdude
 
 ### Compilation
