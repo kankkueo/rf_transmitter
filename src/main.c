@@ -2,9 +2,6 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 /*
 * twi_master.c
@@ -245,17 +242,15 @@ ret_code_t tw_master_receive(uint8_t slave_addr, uint8_t* p_data, uint8_t len)
 /*  Oled display driver
  */
 
-void updateOLED() {
-//    char buffer[16];
-//    sprintf(buffer, "Freq: %d", frequency);
-//    tw_master_transmit(0x3c, &disp, 1, false);
+void startOLED() {
+    char disp = 0xa4;
+    tw_master_transmit(0x3c, &disp, 1, false);
 
-    /*
-    for (uint8_t i = 0; i < strlen(buffer); i++) {
-        i2c_write(buffer[i]);
-    }
-    i2c_stop();
-    */
+    disp = 0xa6;
+    tw_master_transmit(0x3c, &disp, 1, false);
+
+    disp = 0xaf;
+    tw_master_transmit(0x3c, &disp, 1, false);
 }
 
 int main(void) {
@@ -264,45 +259,53 @@ int main(void) {
     tw_start();
     tw_init(TW_FREQ_100K, false);
 
-    char disp = 0xa4;
-    tw_master_transmit(0x3c, &disp, 1, false);
+    startOLED();
 
-    disp = 0xa6;
-    tw_master_transmit(0x3c, &disp, 1, false);
+    char selected = 7;
 
+    char display_freqs[14][5] = {
+        {'8', '2', '.', '6', '4'},
+        {'8', '4', '.', '7', '0'},
+        {'8', '6', '.', '7', '6'},
+        {'8', '8', '.', '8', '3'},
+        {'9', '0', '.', '9', '7'},
+        {'9', '2', '.', '9', '3'},
+        {'9', '4', '.', '9', '9'},
+        {'9', '7', '.', '0', '5'},
+        {'9', '9', '.', '1', '0'},
+        {'1', '0', '1', '.', '2'},
+        {'1', '0', '3', '.', '2'},
+        {'1', '0', '5', '.', '3'},
+        {'1', '0', '7', '.', '3'},
+        {'1', '0', '9', '.', '4'},
+    };
 
-    disp = 0xaf;
-    tw_master_transmit(0x3c, &disp, 1, false);
-
-
-    char pot_value = 126;
+    char pot_values[14] = {
+        0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 127
+    };
 
     while(1) {
 
-
-
         // Button 1
         if (PINB & (1 << 0)) {
-            if (pot_value <= 122) {
-                pot_value += 5;
+            if (selected <= 12) {
+                selected++;
             }
-            tw_master_transmit(0x2f, &pot_value, 1, false);
+            tw_master_transmit(0x2f, &pot_values[selected], 1, false);
             _delay_ms(100);   
         }
         // Button 2
         if (PINB & (1 << 1)) {
-            if (pot_value >= 5) {
-                pot_value -= 5;
+            if (selected >= 1) {
+                selected--;
             }
-            tw_master_transmit(0x2f, &pot_value, 1, false);
+            tw_master_transmit(0x2f, &pot_values[selected], 1, false);
             _delay_ms(100);   
         }
 
- //       uint8_t bb[3] = {'a', 'b','c'};
-//        tw_master_transmit(0x3c, &bb , 3, false);
+        tw_master_transmit(0x3c, &display_freqs[selected][0] , 5, false);
 
         _delay_ms(10);   
-
 
     }
 
