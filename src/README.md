@@ -12,4 +12,5 @@ using an Arduino Uno as an in-system programmer.
 
 ### Compilation
 `make` to compile
+
 `make upload` to upload the code to the MCU
